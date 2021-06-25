@@ -1,0 +1,9 @@
+# requirements.txt
+flask
+packaging
+requests
+pillow
+opencv-python
+boxsdk
+boxsdk[jwt]
+airtable-python-wrapper
