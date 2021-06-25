@@ -1,0 +1,2 @@
+# flask_asilla
+asillaのアラートをflaskで受け、Box,Slack,Airtableと連携するDockerコンテナ
