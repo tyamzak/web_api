@@ -2,6 +2,7 @@
 import threading
 from logging import getLogger, StreamHandler, DEBUG
 from boxsdk import JWTAuth, Client
+from airtable import Airtable
 
 logger = getLogger(__name__)
 handler = StreamHandler()
@@ -174,10 +175,22 @@ def after_response_main(**bodyInfo):
     #slackにメッセージリクエストを送る
     res = requests.post(url="https://slack.com/api/files.upload",params=param, files=img_files)
     logger.debug('メッセージ送信完了')
-    #logger.debug(str(res.text))
 
-    #print_varsize()
+    airtable_upload(str(bodyInfo["device"]),channelId,bodyInfo['location'],eventTime.strftime('%Y-%m-%d %H:%M:%S'),str(shared_url),str(bodyInfo["uid"]),parse_recognition(bodyInfo['recognition']))
 
+def airtable_upload(devname, chID, Location, EventTime, VideoFileURL, UID, Recognition):
+    #警報情報をairtableにアップロードする
+    airtable = Airtable('appmYWES2nzCspFzv', 'Asilla_SDK_Client_ALL_Alerts', 'keyuYrc5WtvD0NEQs')
+    r = airtable.insert({\
+        'DeviceName': devname,\
+        'ChannelID' : chID,\
+        'Location' : Location,\
+        'EventTime' : EventTime,\
+        'VideoFileURL' : VideoFileURL,\
+        'UID' : UID,\
+        'Recognition' : Recognition\
+        })
+    return r
 
 def parse_recognition(recognition):
     if isinstance(recognition, list):
