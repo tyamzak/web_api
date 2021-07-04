@@ -116,13 +116,8 @@ def after_response_main(**bodyInfo):
       convert2gif(videofile)
       logger.debug('ビデオファイル作成終了')
       #さらにBoxに保管し、共有URLリンクを取得する
-      try:
-        shared_url, video_file_id = send_video_Box_sharedlink(videofile)
-        msg = msg + "ビデオファイル: " + str(shared_url) + "\n"
-        msg = msg + "ビデオファイルID:" + str(video_file_id) + "\n"
-      except Exception as e:
-        logger.debug('ビデオファイル作成、ID取得の所でエラーが出ました')
-        logger.debug(e.args)
+      shared_url = send_video_Box_sharedlink(videofile)
+      msg = msg + "ビデオファイル: " + str(shared_url) + "\n"
     else:
     #ビデオファイルが空だったら、元々の送られてきた画像を使う
       logger.debug('ビデオファイルが空なので、gif作成開始')
@@ -342,8 +337,7 @@ def send_video_Box_sharedlink(file_name):
     logger.debug('File "{0}" がBoxに file ID {1}でアップロードされました'.format(new_file.name, new_file.id))
     url = client.file(new_file.id).get_shared_link()
     print('ファイルの共有リンクは: {0}'.format(url))
-    #共有ファイルのURLとファイルidを返す
-    return url, new_file.id
+    return url
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5050, threaded=True) #run app in debug mode on port 5050
