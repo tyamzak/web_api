@@ -1,11 +1,23 @@
 version: '3'
 services:
   flask_asilla2slack:
-    build: .
+    build: ./flask2sla/
     volumes: 
-      - "./src:/projects"
+      - "./flask2sla/src:/projects"
       - "/tmp/videos:/tmp/videos"
     ports:
       - "5050:5050"
     restart: always 
-    container_name: flask
+    container_name: flask2sla
+    network_mode: "host"
+
+  flask_asilla2airtable:
+    build: ./flask2air
+    volumes:
+      - "./flask2air/src:/projects"
+    ports:
+      - "5051:5051"
+    restart: always
+    container_name: flask2air
+    network_mode: "host"
+  
