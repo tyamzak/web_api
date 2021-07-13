@@ -36,29 +36,34 @@ def getGlobalConfig():
   
   return res.json()
 
+@app.route('/getCameraList', methods = ['GET','POST'])
+def getCameraList():
+  #jsonfile = bodyInfo
 
-def main():
-
-    #リクエストを投げられたら、ヘッダを書き換えて、JSONをasillaに投げる
-        
-    bodyInfo = request.json
-
-    res = asilla_config(bodyInfo)
-   
-    return  jsonify(res), 202
-
-def asilla_config(**bodyInfo):
+  #return bodyInfo
+  res = requests.get('http://localhost:5000/getCameraList')
   
-  #requestを送って、返り値をresに格納する
-  #res = requests
-  res = requests.post(url="https://slack.com/api/files.upload",params=param, files=img_files)
-  logger.debug('asillaにメッセージ送信完了')
+  return res.json()
 
 
-  return res
+@app.route('/getCommonCamConfig', methods = ['GET','POST'])
+def getCommonCamConfig():
+  #jsonfile = bodyInfo
+
+  #return bodyInfo
+  res = requests.get('http://localhost:5000/getCommonCamConfig')
+  
+  return res.json()
 
 
+@app.route('/getSpecificCamConfig', methods = ['GET','POST'])
+def getSpecificCamConfig():
+  #jsonfile = bodyInfo
 
+  #return bodyInfo
+  res = requests.get('http://localhost:5000/getSpecificCamConfig')
+  
+  return res.json()
 
 def airtable_upload(devname, chID, Location, EventTime, VideoFileURL, UID, Recognition):
     #警報情報をairtableにアップロードする
