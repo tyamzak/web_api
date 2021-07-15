@@ -7,3 +7,4 @@ opencv-python
 boxsdk
 boxsdk[jwt]
 airtable-python-wrapper
+python-dotenv

@@ -19,7 +19,7 @@ from flask import Flask, escape, request, jsonify
 from packaging import version
 from datetime import datetime, timedelta
 from io import BytesIO
-import os.path
+from os.path import join, dirname
 import json
 import base64
 import requests
@@ -28,6 +28,8 @@ import math
 import glob
 import time
 import cv2
+import os
+from dotenv import load_dotenv
 
 sequence = []
 
@@ -184,8 +186,13 @@ def after_response_main(**bodyInfo):
     airtable_upload(str(bodyInfo["device"]),channelId,bodyInfo['location'],eventTime.strftime('%Y-%m-%d %H:%M:%S'),str(shared_url),str(bodyInfo["uid"]),parse_recognition(bodyInfo['recognition']))
 
 def airtable_upload(devname, chID, Location, EventTime, VideoFileURL, UID, Recognition):
+    
+    dotenv_path = join(dirname(__file__), '.env/.env')
+    load_dotenv(dotenv_path)
+    
     #警報情報をairtableにアップロードする
-    airtable = Airtable('appmYWES2nzCspFzv', 'Asilla_SDK_Client_ALL_Alerts', 'keyuYrc5WtvD0NEQs')
+
+    airtable = Airtable(os.environ.get('AIRTBL_BASEID'), 'Asilla_SDK_Client_ALL_Alerts', os.environ.get('AIRTBL_API_KEY'))
     r = airtable.insert({\
         'DeviceName': devname,\
         'ChannelID' : chID,\

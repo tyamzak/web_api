@@ -3,3 +3,4 @@ flask
 packaging
 requests
 airtable-python-wrapper
+python-dotenv
