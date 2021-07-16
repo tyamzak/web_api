@@ -179,13 +179,14 @@ def after_response_main(**bodyInfo):
     # slackにメッセージリクエストを送る
     res = requests.post(url="https://slack.com/api/files.upload",
                         params=param, files=img_files)
-    logger.debug('メッセージ送信完了')
+    logger.debug('メッセージ送信完了 {}'.format(bodyInfo))
 
     airtable_upload(str(bodyInfo["device"]), channelId, bodyInfo['location'], eventTime.strftime(
-        '%Y-%m-%d %H:%M:%S'), str(shared_url), str(bodyInfo["uid"]), parse_recognition(bodyInfo['recognition']))
+        '%Y-%m-%d %H:%M:%S'), str(shared_url), str(bodyInfo["uid"]),  parse_recognition(bodyInfo['recognition']), str(bodyInfo["camid"]))
+ # {'camid': 'cam01', 'width': 640, 'height': 360, 'uid': 1626333176425, 'client_id': 'Zennikkei_Yamazaki_5WH8LV', 'recognition': [{'type': 5, 'label': 'abnormal'}], 'line_cross': {}, 'device': 'Plaza-ANS_JetsonNX'
 
 
-def airtable_upload(devname, chID, Location, EventTime, VideoFileURL, UID, Recognition):
+def airtable_upload(devname, chID, Location, EventTime, VideoFileURL, UID, Recognition, cam_id):
 
     dotenv_path = join(dirname(__file__), '.env/.env')
     load_dotenv(dotenv_path)
@@ -202,7 +203,8 @@ def airtable_upload(devname, chID, Location, EventTime, VideoFileURL, UID, Recog
         'EventTime': EventTime,
         'VideoFileURL': VideoFileURL,
         'UID': UID,
-        'Recognition': Recognition
+        'Recognition': Recognition,
+        'cam_id': cam_id
     })
     return r
 
