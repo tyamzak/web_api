@@ -30,7 +30,65 @@ Func2TblName = {
     'getCameraList': 'Asilla_CameraList',
     'getCommonCamConfig': 'Asilla_CommonCamConfig',
     'getSpecificCamConfig': 'Asilla_SpecificCamConfig',
+    'setNormalAction': 'Asilla_setNormalAction'
 }
+
+
+@app.route('/setNormalAction', methods=['GET', 'POST'])
+def setNormalAction():
+    # AirtableのAsilla_setNormalActionからこのデバイスに該当するものを引っ張ってきて実行する。
+    # 終わったら、DoneをTRUEにする
+
+    # 現在の関数名を取得
+    method_name = sys._getframe().f_code.co_name
+    table_name = Func2TblName.get(method_name)
+
+    # Airtableから、DEV_SERIALを使用して、リクエストがないか確認する
+    airtable = Airtable(os.environ.get('AIRTBL_BASEID'),
+                        table_name, os.environ.get('AIRTBL_API_KEY'))
+
+    dev_serial = os.environ.get('AIRTBL_DEV_SERIAL')
+    logger.debug("tablename is {}".format(table_name))
+    logger.debug("dev_serial is {}".format(dev_serial))
+
+    # DEV_SERIAL_DONEで探すことで、実施済みをピックアップしないようにしている
+    norm_lst = airtable.search('DEV_SERIAL_DONE', '{}'.format(dev_serial))
+
+    logger.debug("norm_lst is {}".format(norm_lst))
+
+    http_request = 'http://localhost:5000/{}'.format(method_name)
+
+    headers = {
+        'Content-Type': 'application/json',
+    }
+
+    for r in norm_lst:
+        # textをJSONに変換する
+        res = r
+#norm_lst is [{'id': 'recYpJBbx8ABItbox', 'fields': {'No': 1, 'modified': '2021-07-14T14:17:52.000Z', 'Created': '2021-07-14T13:53:53.000Z', 'DEV_SERIAL_DONE': 'recznDPza5OU8O6s3', 'UID_Asilla_SDK_Client_ALL_Alerts': ['rec3N5IWKSnkuw4vG'], 'Recognition (from Asilla_SDK_Client_ALL_Alerts)': ['abnormal(暴力傾向)'], 'VideoFileURL (from Asilla_SDK_Client_ALL_Alerts)': ['https://app.box.com/s/qgb2c5nb4sf0gdku6pq7jkt6atzbeoql'], 'EventTime (from Asilla_SDK_Client_ALL_Alerts)': ['2021-07-15T14:12:07.000Z'], 'Location (from Asilla_SDK_Client_ALL_Alerts)': ['cam02'], 'ChannelID (from Asilla_SDK_Client_ALL_Alerts)': ['C025YHECNJH'], 'DeviceName (from Asilla_SDK_Client_ALL_Alerts)': ['Plaza-ANS_JetsonNX'], 'DEV_SERIAL': ['recznDPza5OU8O6s3']}, 'createdTime': '2021-07-14T13:53:53.000Z'}]
+        time_id = res['fields']['UID'][0]
+        logger.debug("time_id is {}".format(time_id))
+        cam_id = res['fields']['cam_id'][0]
+        logger.debug("cam_id is {}".format(cam_id))
+        data = {'time_id': time_id, 'cam_id': cam_id}
+
+        logger.debug(data)
+
+        req_res = requests.post(http_request, headers=headers, data=data)
+
+        logger.debug(req_res)
+
+        # １つずつresponceをairtableにアップロードする
+        recordid = res['id']
+        record = {'Done': True}
+        r = airtable.update(recordid, record)
+
+    if len(norm_lst) == 0:
+        rtnvalue = "NoRecordMatched\n", 200
+    else:
+        rtnvalue = "Normalization sucdeeded\n", 200
+
+    return rtnvalue
 
 
 @app.route('/getGlobalConfig', methods=['GET', 'POST'])
@@ -135,7 +193,7 @@ def airtable_upload(res, table_name):
     if('config_info' in res):
         record = res['config_info']
     else:
-      # configinfoがない場合は、そのまま利用する
+        # configinfoがない場合は、そのまま利用する
         record = res
 
     # recordにDEV_SERIALを入れる
