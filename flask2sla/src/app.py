@@ -179,11 +179,16 @@ def after_response_main(**bodyInfo):
     # slackにメッセージリクエストを送る
     res = requests.post(url="https://slack.com/api/files.upload",
                         params=param, files=img_files)
-    logger.debug('メッセージ送信完了 {}'.format(bodyInfo))
+    #logger.debug('メッセージ送信完了 {}'.format(bodyInfo))
 
     airtable_upload(str(bodyInfo["device"]), channelId, bodyInfo['location'], eventTime.strftime(
-        '%Y-%m-%d %H:%M:%S'), str(shared_url), str(bodyInfo["uid"]),  parse_recognition(bodyInfo['recognition']), str(bodyInfo["camid"]))
+        '%Y-%m-%d %H:%M:%S'), str(shared_url), str(bodyInfo["uid"]),  parse_recognition(bodyInfo['recognition']), camid2int(str(bodyInfo["camid"])))
  # {'camid': 'cam01', 'width': 640, 'height': 360, 'uid': 1626333176425, 'client_id': 'Zennikkei_Yamazaki_5WH8LV', 'recognition': [{'type': 5, 'label': 'abnormal'}], 'line_cross': {}, 'device': 'Plaza-ANS_JetsonNX'
+
+
+def camid2int(str_camid):
+    newcamid = int(str_camid.replace('cam', ''))
+    return str(newcamid)
 
 
 def airtable_upload(devname, chID, Location, EventTime, VideoFileURL, UID, Recognition, cam_id):
@@ -351,10 +356,6 @@ def send_video_Box_sharedlink(file_name):
     client = Client(auth)
     service_account = client.user().get()
     print('Service Acount user ID is {0}'.format(service_account.id))
-
-#file_id = '825308721515'
-#file_info = client.file(file_id).get()
-#print('File "{0}" has a size of {1} bytes'.format(file_info.name,file_info.size))
 
     #file_name = 'vis_cam03_cam03_1624439062063_778914.avi'
     stream = open(file_name, 'rb')
