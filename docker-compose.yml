@@ -6,6 +6,7 @@ services:
       - "./flask2sla/src:/projects"
       - "./.env:/projects/.env"
       - "/tmp/videos:/tmp/videos"
+      - "/etc/localtime:/etc/localtime:ro"
     ports:
       - "5050:5050"
     restart: always 
@@ -17,6 +18,7 @@ services:
     volumes:
       - "./flask2air/src:/projects"
       - "./.env:/projects/.env"
+      - "/etc/localtime:/etc/localtime:ro"
     ports:
       - "5051:5051"
     restart: always
