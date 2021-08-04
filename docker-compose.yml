@@ -35,7 +35,8 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
       - "/tmp/videos:/workspace/AsillaSDK_Client/videos"
     ports:
-      - "8090-8091:8090-8091"
+      - "8090:8090"
+      - "8091:8091"
       - "5000:5000"
     deploy:  # gpuを使う設定
       resources:

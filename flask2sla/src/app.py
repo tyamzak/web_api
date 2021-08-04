@@ -161,9 +161,12 @@ def after_response_main(**bodyInfo):
                      append_images=frames, optimize=False, duration=166, loop=0)
             logger.debug("gif作成完了")
 
+    dotenv_path = join(dirname(__file__), '.env/.env')
+    load_dotenv(dotenv_path)
+
     # 株式会社全日警のWebhookID
-    accessToken = "xoxb-2123538440165-2178559596549-BPYjL6DV6LJXw1H2W0IrNiQa"
-    channelId = "C025YHECNJH"  # アラートのチャンネルID
+    accessToken = os.environ.get('SLACK_ACCESS_TOKEN')
+    channelId = os.environ.get('SLACK_CHANNEL_ID')
     initial_comment = msg
     # 保存した画像を送信する
     img_files = {'file': open("/tmp/videos/anomaly.gif", 'rb')}
@@ -180,6 +183,7 @@ def after_response_main(**bodyInfo):
     res = requests.post(url="https://slack.com/api/files.upload",
                         params=param, files=img_files)
     #logger.debug('メッセージ送信完了 {}'.format(bodyInfo))
+    logger.debug('slackレスポンス {}'.format(res))
 
     airtable_upload(str(bodyInfo["device"]), channelId, bodyInfo['location'], eventTime.strftime(
         '%Y-%m-%d %H:%M:%S'), str(shared_url), str(bodyInfo["uid"]),  parse_recognition(bodyInfo['recognition']), camid2int(str(bodyInfo["camid"])))
