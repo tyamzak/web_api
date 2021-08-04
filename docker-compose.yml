@@ -11,10 +11,10 @@ services:
       - "5050:5050"
     restart: always 
     container_name: flask2sla
-    network_mode: "host"
+    #network_mode: "host"
 
   flask_asilla2airtable:
-    build: ./flask2air
+    build: ./flask2air/
     volumes:
       - "./flask2air/src:/projects"
       - "./.env:/projects/.env"
@@ -23,5 +23,29 @@ services:
       - "5051:5051"
     restart: always
     container_name: flask2air
-    network_mode: "host"
-  
+    #network_mode: "host"
+
+  asilla_sdk_client_v1.3:
+    image: asilla/sdk_client_nx:v1.3_cuda-10.2
+    command: /workspace/autostart.sh
+    volumes:
+      - "/etc/nv_tegra_release:/etc/nv_tegra_release"
+      - "/sys/firmware:/sys/firmware"
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/tmp/videos:/workspace/AsillaSDK_Client/videos"
+    ports:
+      - "8090-8091:8090-8091"
+      - "5000:5000"
+    deploy:  # gpuを使う設定
+      resources:
+        reservations:
+          devices: 
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    privileged: true
+    tty: true #ターミナルを起動させて終了しないようにする
+    restart: always
+    container_name: asilla_sdk_client
+    #network_mode: "host"
