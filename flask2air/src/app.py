@@ -17,13 +17,11 @@ logger.setLevel(DEBUG)
 logger.addHandler(handler)
 logger.propagate = False
 
-
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
 dotenv_path = join(dirname(__file__), '.env/.env')
 load_dotenv(dotenv_path)
-
 
 Func2TblName = {
     'getGlobalConfig': 'Asilla_GlobalConfig',
@@ -56,7 +54,7 @@ def setNormalAction():
 
     logger.debug("norm_lst is {}".format(norm_lst))
 
-    http_request = 'http://localhost:5000/{}'.format(method_name)
+    http_request = 'http://asilla_sdk_client:5000/{}'.format(method_name)
 
     headers = {
         'Content-Type': 'application/json',
@@ -95,7 +93,7 @@ def setNormalAction():
 def getGlobalConfig():
     # 現在の関数名をメソッド名に流用してリクエストを送る
     method_name = sys._getframe().f_code.co_name
-    http_request = 'http://localhost:5000/{}'.format(method_name)
+    http_request = 'http://asilla_sdk_client:5000/{}'.format(method_name)
     res = requests.get(http_request)
 
     # textをJSONに変換する
@@ -113,7 +111,7 @@ def getGlobalConfig():
 def getCameraList():
     # 現在の関数名をメソッド名に流用してリクエストを送る
     method_name = sys._getframe().f_code.co_name
-    http_request = 'http://localhost:5000/{}'.format(method_name)
+    http_request = 'http://asilla_sdk_client:5000/{}'.format(method_name)
 
     # getCameraListはList型を返してくる
     resList = requests.get(http_request).json()
@@ -134,7 +132,7 @@ def getCameraList():
 def getCommonCamConfig():
     # 現在の関数名をメソッド名に流用してリクエストを送る
     method_name = sys._getframe().f_code.co_name
-    http_request = 'http://localhost:5000/{}'.format(method_name)
+    http_request = 'http://asilla_sdk_client:5000/{}'.format(method_name)
     res = requests.get(http_request)
 
     # textをJSONに変換する
@@ -153,7 +151,7 @@ def getSpecificCamConfig():
     # 現在の関数名をメソッド名に流用してリクエストを送る
     method_name = sys._getframe().f_code.co_name
 
-    http_request = 'http://localhost:5000/{}'.format(method_name)
+    http_request = 'http://asilla_sdk_client:5000/{}'.format(method_name)
 
     headers = {
         'Content-Type': 'application/json',
