@@ -63,7 +63,6 @@ def setNormalAction():
     for r in norm_lst:
         # textをJSONに変換する
         res = r
-#norm_lst is [{'id': 'recYpJBbx8ABItbox', 'fields': {'No': 1, 'modified': '2021-07-14T14:17:52.000Z', 'Created': '2021-07-14T13:53:53.000Z', 'DEV_SERIAL_DONE': 'recznDPza5OU8O6s3', 'UID_Asilla_SDK_Client_ALL_Alerts': ['rec3N5IWKSnkuw4vG'], 'Recognition (from Asilla_SDK_Client_ALL_Alerts)': ['abnormal(暴力傾向)'], 'VideoFileURL (from Asilla_SDK_Client_ALL_Alerts)': ['https://app.box.com/s/qgb2c5nb4sf0gdku6pq7jkt6atzbeoql'], 'EventTime (from Asilla_SDK_Client_ALL_Alerts)': ['2021-07-15T14:12:07.000Z'], 'Location (from Asilla_SDK_Client_ALL_Alerts)': ['cam02'], 'ChannelID (from Asilla_SDK_Client_ALL_Alerts)': ['C025YHECNJH'], 'DeviceName (from Asilla_SDK_Client_ALL_Alerts)': ['Plaza-ANS_JetsonNX'], 'DEV_SERIAL': ['recznDPza5OU8O6s3']}, 'createdTime': '2021-07-14T13:53:53.000Z'}]
         time_id = res['fields']['UID'][0]
         logger.debug("time_id is {}".format(time_id))
         cam_id = res['fields']['cam_id'][0]
