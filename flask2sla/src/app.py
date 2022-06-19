@@ -164,7 +164,7 @@ def after_response_main(**bodyInfo):
     dotenv_path = join(dirname(__file__), '.env/.env')
     load_dotenv(dotenv_path)
 
-    # 株式会社全日警のWebhookID
+    # WebhookID
     accessToken = os.environ.get('SLACK_ACCESS_TOKEN')
     channelId = os.environ.get('SLACK_CHANNEL_ID')
     initial_comment = msg
